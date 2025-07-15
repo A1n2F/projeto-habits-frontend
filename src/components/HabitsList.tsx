@@ -2,6 +2,7 @@ import * as Checkbox from "@radix-ui/react-checkbox";
 import { Check } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { api } from "../lib/axios";
+import dayjs from "dayjs";
 
 interface HabitsListProps {
     date: Date
@@ -28,6 +29,8 @@ export function HabitsList({ date }: HabitsListProps) {
             setHabitInfo(response.data)
         })
     }, [])
+
+    const isDateInPast = dayjs(date).endOf("day").isBefore(new Date())
     
     return (
         <div className="mt-6 flex flex-col gap-3">
@@ -36,6 +39,7 @@ export function HabitsList({ date }: HabitsListProps) {
                     <Checkbox.Root 
                         key={habit.id} 
                         checked={habitsInfo.completedHabits.includes(habit.id)}
+                        disabled={isDateInPast}
                         className="flex items-center gap-3 group cursor-pointer"
                     >
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800

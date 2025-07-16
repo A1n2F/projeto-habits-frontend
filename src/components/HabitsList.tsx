@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 
 interface HabitsListProps {
     date: Date
+    onCompletedChanged: (completed: number) => void
 }
 
 interface HabitsInfoProps {
@@ -17,7 +18,7 @@ interface HabitsInfoProps {
     completedHabits: string[]
 }
 
-export function HabitsList({ date }: HabitsListProps) {
+export function HabitsList({ date, onCompletedChanged }: HabitsListProps) {
     const [habitsInfo, setHabitsInfo] = useState<HabitsInfoProps>()
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export function HabitsList({ date }: HabitsListProps) {
     }, [])
 
     async function handleToggleHabit(habitId: string) {
-        await api.patch(`/habits/${habitId}/toggle`)
+        await api.post(`/habits/${habitId}/toggle`)
 
         const isHabitAlreadyCompleted = habitsInfo!.completedHabits.includes(habitId)
 
@@ -47,9 +48,9 @@ export function HabitsList({ date }: HabitsListProps) {
             possibleHabits: habitsInfo!.possibleHabits,
             completedHabits
         })
+
+        onCompletedChanged(completedHabits.length)
     }
-
-
 
     const isDateInPast = dayjs(date).endOf("day").isBefore(new Date())
     
